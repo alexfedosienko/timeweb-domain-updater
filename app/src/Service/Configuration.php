@@ -31,6 +31,51 @@ class Configuration
     return $this->data["domains"];
   }
 
+  public function addDomain($domainName)
+  {
+    foreach ($this->data["domains"] as $domain) {
+      if ($domain["fqdn"] == $domainName) {
+        return false;
+      }
+    }
+
+    $this->data["domains"][] = [
+      "fqdn" => $domainName
+    ];
+
+    $this->data["last-ip"] = "127.0.0.1";
+    $this->save();
+    return true;
+  }
+
+  public function removeDomain($domainName)
+  {
+    $this->data["domains"] = array_filter($this->data["domains"], function ($item) use ($domainName) {
+      if ($item["fqdn"] != $domainName) {
+        return $item;
+      }
+    });
+    $this->save();
+  }
+
+  public function export()
+  {
+    return file_get_contents($this->configFileName);
+  }
+
+  public function import($config)
+  {
+    try {
+      $configData = json_decode($config, true, 512, JSON_THROW_ON_ERROR);
+      $configData["last-ip"] = "127.0.0.1";
+      $this->data = $configData;
+      $this->save();
+      Log::info("Импорт успешно выполнен");
+    } catch (\Throwable $th) {
+      Log::info("Файл конфигурации не валидный");
+    }
+  }
+
   public function setDomainId($domainIndex, $id)
   {
     $this->data["domains"][$domainIndex]["A_id"] = $id;

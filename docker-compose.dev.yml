@@ -8,6 +8,6 @@ services:
     container_name: timeweb-domain-updater
     restart: always
     environment:
-      - TIMEWEB_TOKEN=
+      - TIMEWEB_TOKEN=${TIMEWEB_TOKEN}
     volumes:
       - ./app/data:/app/data

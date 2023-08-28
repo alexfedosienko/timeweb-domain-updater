@@ -1,1 +1,1 @@
-* * * * * /usr/local/bin/php -f /app/src/run.php
+* * * * * /usr/local/bin/php -q /app/src/run.php --run
