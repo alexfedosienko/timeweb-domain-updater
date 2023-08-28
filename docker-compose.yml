@@ -1,0 +1,16 @@
+version: '3.3'
+
+volumes:
+  twdu:
+
+services:
+  timeweb-domain-updater:
+    image: alexfedosienko/timeweb-domain-updater:latest
+    working_dir: /app
+    container_name: timeweb-domain-updater
+    restart: always
+    environment:
+      - TIMEWEB_TOKEN=
+    volumes:
+      - twdu:/app/data
+

@@ -1,0 +1,19 @@
+{
+    "name": "aleksandrfedosienko/timeweb-autoupdate-ip",
+    "version": "0.1.0",
+    "autoload": {
+        "psr-4": {
+            "TimewebAutoupdateIP\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "alexfedosienko",
+            "email": "alexfedosienko@gmail.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^7.8",
+        "vlucas/phpdotenv": "^5.5"
+    }
+}
