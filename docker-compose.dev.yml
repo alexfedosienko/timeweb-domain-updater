@@ -1,11 +1,10 @@
 version: '3.3'
 
 services:
-  timeweb-domain-updater:
+  app:
     build:
       context: ./
     working_dir: /app
-    container_name: timeweb-domain-updater
     restart: always
     environment:
       - TIMEWEB_TOKEN=${TIMEWEB_TOKEN}

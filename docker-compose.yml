@@ -4,10 +4,9 @@ volumes:
   twdu:
 
 services:
-  timeweb-domain-updater:
+  app:
     image: alexfedosienko/timeweb-domain-updater:latest
     working_dir: /app
-    container_name: timeweb-domain-updater
     restart: always
     environment:
       - TIMEWEB_TOKEN=
