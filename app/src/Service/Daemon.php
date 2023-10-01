@@ -45,6 +45,11 @@ class Daemon
     }
   }
 
+  protected function clearIp()
+  {
+    $this->configuration->setNewIp("0.0.0.0");
+  }
+
   protected function work()
   {
     $newIp = $this->checkIp->getMyIp();
@@ -80,22 +85,40 @@ class Daemon
     $domains = $this->configuration->getDomains();
     foreach ($domains as $domainInfo) {
       Log::info("Отправка запроса на обновление IP у домена " . $domainInfo["fqdn"]);
-      $this->timeweb->updateARecord($domainInfo["fqdn"], $domainInfo["A_id"], $newIp);
+      try {
+        $this->timeweb->updateARecord($domainInfo["fqdn"], $domainInfo["A_id"], $newIp);
+      } catch (\Throwable $th) {
+        Log::info("Не удалось обновить A запись у домена " . $domainInfo["fqdn"]);
+        Log::info("ERROR: " . $th->getMessage());
+      }
     }
-
     Log::info("Обновление завершено");
   }
 
   public function run()
   {
+    $helpText = "
+--run - Запуск работы приложения
+--dry-run - Принудительный запуск обновления IP адресов
+--add - Добавление домена или доменов в формате \"domain.ru;www.domain.ru\"
+--remove - Удаление домена
+--export-config - Экспорт всей конфигурации приложения
+--import-config - Импорт всей конфигурации приложения
+--help - Получаение информации о командах\n";
+
     $commands = @$GLOBALS["argv"];
     if (!isset($commands[1])) {
       Log::info("Не указан ACTION");
+      Log::info($helpText);
       die();
     }
 
     switch ($commands[1]) {
       case "--run":
+        $this->work();
+        break;
+      case "--dry-run":
+        $this->clearIp();
         $this->work();
         break;
       case "--add":
@@ -120,13 +143,7 @@ class Daemon
         $this->configuration->import($commands[2]);
         break;
       case "--help":
-        echo "
---run - Запуск работы приложения
---add - Добавление домена или доменов в формате \"domain.ru;www.domain.ru\"
---remove - Удаление домена
---export-config - Экспорт всей конфигурации приложения
---import-config - Импорт всей конфигурации приложения
---help - Получаение информации о командах\n\n";
+        echo $helpText;
         break;
     }
   }
